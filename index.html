@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div id="game">
+        <canvas id="canvas" height="100%" width="100%" style="position: absolute; top: 0; z-index: 50;"></canvas>
+        <div class="img-pos">
+            <div class="img-wrap">
+                <img src="./assets/landscape.png"/>
+            </div>
+        </div>
+        <div class="img-pos">
+            <div class="img-wrap">
+                <img src="./assets/map.png"/>
+            </div>
+        </div>
+        <div class="game-bar">
+            <div style="flex-grow: 5;">
+                <div class="health-container">
+                    <div id="hide-health-p1"></div>
+                    <div id="health-p1" class="p1-health health"></div>
+                </div>
+            </div>
+            <div style="flex-grow: 2; text-align: center; z-index: 1; font-family: 'VT323', monospace; font-size: 54px;">
+                VS
+            </div>
+            <div style="flex-grow: 5; text-align: right;">
+                <div class="health-container">
+                    <div id="hide-health-p2"></div>
+                    <div id="health-p2" class="p2-health health"></div>
+                </div>
+            </div>
+        </div>
+        <div id="player1">
+            <div class="weapon-container">
+                <div id="weapon-p1" class="weapon">
+                    <div class="img-pos">
+                        <div class="img-wrap">
+                            <img id="img-p1" src="./assets/coutal_beurre.png" alt="player1"/>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class="img-pos">
+                <div class="img-wrap">
+                    <img id="img-p1" src="./assets/meuh.png" alt="player1"/>
+                </div>
+            </div>
+        </div>
+        <div id="player2">
+            <div class="weapon-container">
+                <div id="weapon-p2" class="weapon">
+                    <div class="img-pos">
+                        <div class="img-wrap">
+                            <img id="img-p1" src="./assets/coutal_beurre.png" alt="player1"/>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class="img-pos">
+                <div class="img-wrap">
+                    <img src="./assets/meuh.png" alt="player2"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="index.js"></script>
+</body>
+</html>
