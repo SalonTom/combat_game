@@ -2,7 +2,7 @@
 
 # Creation of a combat game - html, css, js
 
-![Game](image.png)
+![Game](game.png)
 
 This game is an offline combat game where two players can fight each other using the same computer. The goal is to deal 100 damages or more to the ennemy. Eventually, several characters with their own skin and attacks will be available.
 
