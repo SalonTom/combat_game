@@ -10,11 +10,24 @@ class Player {
     jumped = false;
     jumpTimer = 0;
     health = 100;
-    launchedBasicAttack = false;
-    primaryAttackReady = false;
-    // En secondes
-    primaryAttackTimer = 8;
     playerDomElement;
+    healthPercentageDom;
+
+    attacks = {
+        primary : {
+            timer : 0,
+            launched : false,
+            ready : false,
+            damages : 5
+        },
+        ultimate : {
+            timer : 15,
+            launched : false,
+            ready : false
+        }
+    };
+
+    keys = []
 }
 
 class CollisionBlock {
@@ -66,10 +79,11 @@ const ctx = canvas.getContext("2d");
 //     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     
-const blocks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+const blocks = [
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 363, 364, 364, 364, 364, 560, 0, 0, 0, 0, 0, 0, 0, 0, 363, 364, 364, 364, 364, 560, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -86,6 +100,7 @@ const blocks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 blocks.reverse()
 const blocksRows = [];
 let collisionBlocks = [];
@@ -99,30 +114,19 @@ for (let i = 0; i<numberTileHeight; i++) {
     blocksRows.push(blocks.slice(i*30, i*30 + 30))
 }
 
-console.log(blocksRows)
-var ctr = 1
 for (let i = 0; i<numberTileHeight; i++) {
     const row = []
     
     for (let j = 0; j<numberTileWidth; j++) {
         if (blocksRows[i][j] > 0) {
             collisionBlock = new CollisionBlock(j*blockWidth, i*blockHeight, blockWidth, blockHeight);
-            collisionBlock.number = ctr;
             row.push(collisionBlock);
-            ctx.fillStyle = "green";
-            // ctx.fillRect(j*blockWidth, i*blockHeight, blockWidth, blockHeight);
-            // ctx.fillText(ctr.toString(),j*blockWidth, i*blockHeight);
-            ctr++;
         }
     }
 
     if (row.length) collisionBlocks.push(row);
 }
 
-
-// collisionBlocks = collisionBlocks.reverse();
-
-console.log(collisionBlocks)
 
 const numberOfGameLevel = collisionBlocks.length;
 
@@ -158,6 +162,8 @@ p1.weaponDomElement = weaponPlayer1;
 p1.weaponX = weaponPlayer1.getBoundingClientRect().left + window.scrollX;
 p1.weaponY = weaponPlayer1.getBoundingClientRect().top + window.scrollY;
 p1.playerDomElement = player1;
+p1.healthPercentageDom = healthPercentageP1;
+p1.keys = ['q', 'd', ' ', 'z', 'a'];
 
 /** Création player 2 */
 let p2 = new Player();
@@ -167,7 +173,8 @@ p2.weaponDomElement = weaponPlayer2;
 p2.weaponX = weaponPlayer2.getBoundingClientRect().left + window.scrollX;
 p2.weaponY = weaponPlayer2.getBoundingClientRect().top + window.scrollY;
 p2.playerDomElement = player2;
-
+p2.healthPercentageDom = healthPercentageP2;
+p2.keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', '1', '2']
 
 
 const players = [p1,p2];
@@ -200,29 +207,24 @@ window.addEventListener('keyup', (e) => {
 
     if (e.key == ' ') {
         players[0].weaponDomElement.style.display = 'none';
-        players[0].launchedBasicAttack = false;
+        players[0].attacks.primary.launched = false;
     }
 
     if (e.key == '1') {
         players[1].weaponDomElement.style.display = 'none';
-        players[1].launchedBasicAttack = false;
+        players[1].attacks.primary.launched = false;
     }
 });
 
 const gameIsPlayed = setInterval(() => {
     act();
 
-    for(let i = 0; i<players.length; i++) {
-        const player = players[i];
+    players.forEach(player => {
+        player.attacks.ultimate.timer += 1;
 
-        player.primaryAttackTimer += 1;
-
-        // ctx.fillStyle= "green";
-        // ctx.fillRect(canvas.offsetWidth - player.x, canvas.offsetHeight - player.y, 10, 10);
-
-        if (player.primaryAttackTimer % 100 == 0 && !player.primaryAttackReady) {
-            player.primaryAttackReady = true;
-            console.log('player ' + (i + 1) + ' ability ready');
+        if (player.attacks.ultimate.timer % 100 == 0 && !player.attacks.ultimate.ready) {
+            player.attacks.ultimate.ready = true;
+            console.log(`player ${players.indexOf(player) + 1} ability ready`);
         }
 
         if (player.jumped && !player.isGoingDown) {
@@ -230,7 +232,6 @@ const gameIsPlayed = setInterval(() => {
 
             if (player.y < player.levelIndex*targetJump) {
                 player.y += player.velocityY;
-                // console.log("+1")
             } else {
                 player.isGoingDown = true;
             }
@@ -240,13 +241,9 @@ const gameIsPlayed = setInterval(() => {
         } else {
 
             player.levelIndex = Math.ceil(((player.y) / (5*blockHeight))) + 1;
-            // console.log(player.y, blockHeight);
             
             if (player.y > 0) {
                 if (playerOnPlatform(player)) {
-                    // player.y = (player.levelIndex)*(5*blockHeight);
-                    // console.log(player.y)
-                    console.log("player landeed")
                     player.isGoingDown = false;
                     player.jumped = false;
                 } else {
@@ -260,142 +257,80 @@ const gameIsPlayed = setInterval(() => {
 
             player.playerDomElement.style.bottom = player.y + 'px';
         }
-        // if (player.y > (player.levelIndex - 1)*targetJump) {
-        //     player.isGoingDown = true;
-        //     player.y -= player.velocityY;
-        // }
 
         if (player.health == 0) {
             clearInterval(gameIsPlayed)
             if(!alert('Player' + (i + 1) + ' won!')) window.location.reload();
-        } 
-
-        players[i] = player;
-    }
+        }
+    });
 
 }, timerStepMs);
 
 function act() {
-    p1 = players[0];
-    p2 = players[1];
     keysPressed.forEach(key => {
-        switch(key) {
 
-            /** Player 1 actions */
-            case 'q':
+        players.forEach(player => {
 
-                if (p1.x - 10 >= 0) {
-                    p1.x -= stepX;
-                    p1.playerDomElement.style.left = p1.x + 'px';
-                }
+            if (player.keys.includes(key)) {
+
+                switch(key) {
     
-                break;
-            case 'd':
-    
-                if (p1.x + stepX + p1.playerDomElement.offsetWidth < game.offsetWidth) {
-                    p1.x += stepX;
-                    p1.playerDomElement.style.left = p1.x + 'px';
-                }
-    
-                break;
+                    case 'ArrowLeft':
+                    case 'q':
+
+                        movePlayer(player, 'left');
+                        break;
+
+                    case 'ArrowRight':
+                    case 'd':
             
-            case ' ':
-                p1.weaponDomElement.style.display = 'block';
+                        movePlayer(player, 'right');
+                        break;
 
-                if(p1.x + p1.weaponDomElement.offsetWidth < p2.x + p2.playerDomElement.offsetWidth && p1.x + p1.weaponDomElement.offsetWidth > p2.x) {
-                    if(p1.y < p2.y + p2.playerDomElement.offsetHeight && p1.y + p1.weaponDomElement.offsetHeight > p2.y) {
-                        if (!p1.launchedBasicAttack) {
-                            p1.launchedBasicAttack = true;
-                            p2.health -= 5;
-                            healthPercentageP2.style.width = ((1 - (p2.health/baseHealth))* 100) + '%';
-                            healthPercentageP2.style.display = 'block';
-                        }
-                    }
-                }
-                break;
-            case 'z':
-                if (!p1.jumped) {
-                    p1.jumped = true;
-                }
-                break;
-            case 'a' :
-                if (p1.primaryAttackReady) {
-                    p1.primaryAttackReady = false;
-                    p1.primaryAttackTimer = 0;
-                    console.log("attack1 launched")
-                }
-                break;
+                    case 'ArrowUp':
+                    case 'z':
 
-            /** Player 2 actions */
-            case 'ArrowUp':
-                if (!p2.jumped) {
-                    p2.jumped = true;
-                }
-                break;
-            
-            case 'ArrowLeft':
-                
-                if (p2.x - 10 >= 0) {
-                    p2.x -= stepX;
-                    p2.playerDomElement.style.left = p2.x + 'px';
-                }
-    
-                break;
-            
-            case 'ArrowDown':
-            
-                if (p2.y - blockHeight -1 >= 0) {
-                    p2.y -= blockHeight+1;
-                    p2.playerDomElement.style.bottom = p2.y + 'px';
-                }
+                        movePlayer(player, 'up');
+                        break;
+                    
+                    case ' ':
+                        attack(player, 'primary');
+        
+                        break;
 
-                break;
+                    case 'a' :
+                    case '2' :
 
-            case 'ArrowRight':
-    
-                if (p2.x + stepX + player2.offsetWidth < game.offsetWidth) {
-                    p2.x += stepX;
-                    p2.playerDomElement.style.left = p2.x + 'px';
-                }
-    
-                break;
-
-            case '1':
-                    p2.weaponDomElement.style.display = 'block';
-    
-                    if(p2.x - p2.weaponDomElement.offsetWidth + p2.playerDomElement.offsetWidth > p1.x && p2.x - p1.playerDomElement.offsetWidth + p2.playerDomElement.offsetWidth < p1.x + p1.playerDomElement.offsetWidth) {
-                        if(p2.y < p1.y + p1.playerDomElement.offsetHeight && p2.y + p2.weaponDomElement.offsetHeight > p1.y) {
-                            if (!p2.launchedBasicAttack) {
-                                p2.launchedBasicAttack = true;
-                                p1.health -= 5;
-                                healthPercentageP1.style.width = ((1 - (p1.health/baseHealth))* 100) + '%'
-                                healthPercentageP1.style.display = 'block'
+                        attack(player, 'ultimate');
+                        break;
+        
+                    case '1':
+                        p2.weaponDomElement.style.display = 'block';
+        
+                        if(p2.x - p2.weaponDomElement.offsetWidth + p2.playerDomElement.offsetWidth > p1.x && p2.x - p1.playerDomElement.offsetWidth + p2.playerDomElement.offsetWidth < p1.x + p1.playerDomElement.offsetWidth) {
+                            if(p2.y < p1.y + p1.playerDomElement.offsetHeight && p2.y + p2.weaponDomElement.offsetHeight > p1.y) {
+                                if (!p2.attacks.primary.launched) {
+                                    p2.attacks.primary.launched = true;
+                                    p1.health -= p2.attacks.primary.damages;
+                                    healthPercentageP1.style.width = ((1 - (p1.health/baseHealth))* 100) + '%'
+                                    healthPercentageP1.style.display = 'block'
+                                }
                             }
                         }
-                    }
-                    break;
-
-            case '2' :
-                if (p2.primaryAttackReady) {
-                    p2.primaryAttackReady = false;
-                    p2.primaryAttackReady = 0;
-                    console.log("attack2 launched")
+                        break;
                 }
-                break;
-        }
-    })
-    players[0] = p1;
-    players[1] = p2;
+            }
+        })
+    });
 }
 
 
 function playerOnPlatform(player) {
     for (let i = 0; i<collisionBlocks.length; i++) {
+        // On ne s'intéresse qu'aux blocks situés à la même hauteur que le joueur
         if (player.y > collisionBlocks[i][0].y  && player.y < collisionBlocks[i][0].y + blockHeight) {
             for (let j = 0; j<collisionBlocks[i].length; j++) {
-                console.log(player.x, collisionBlocks[i][j].x, collisionBlocks[i][j].x + collisionBlocks[i][j].width, player.x > collisionBlocks[i][j].x && player.x < collisionBlocks[i][j].x + collisionBlocks[i][j].width)
                 if (player.x + blockWidth >= collisionBlocks[i][j].x && player.x + blockWidth <= collisionBlocks[i][j].x + blockWidth) {
-                    console.log("Collision with: " + collisionBlocks[i][j].number.toString());
                     return true;
                 }
             }
@@ -403,4 +338,79 @@ function playerOnPlatform(player) {
     }
 
     return false;
+}
+
+/** 
+ * Retourne true si object1 est dans la zone d'object2.
+ * Possibilité de préciser une offsetHeight et un offsetwidth pour l'object2
+*/
+function objectsCollide(object1x, object1y, object2x, object2y, offsetHeight2, offsetWidth2) {
+    if (object1y > object2y && object1y < object2y + offsetHeight2) {
+        if (object1x >= object2x && object1x <= object2x + offsetWidth2) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function movePlayer(player, direction) {
+
+    switch(direction) {
+        case 'left':
+            if (player.x - stepX >= 0) {
+                player.x -= stepX;
+                player.playerDomElement.style.left = player.x + 'px';
+            }
+        break;
+
+        case 'right':
+            if (player.x + stepX + player.playerDomElement.offsetWidth < game.offsetWidth) {
+                player.x += stepX;
+                player.playerDomElement.style.left = player.x + 'px';
+            }
+        break;
+
+        case 'up':
+            if (!player.jumped) {
+                player.jumped = true;
+            }
+        break;
+    }
+
+}
+
+function attack(player, type) {
+    switch(type) {
+        case 'ultimate':
+            if (player.attacks.ultimate.ready) {
+                player.attacks.ultimate.ready = false;
+                player.attacks.ultimate.timer = 0;
+                player.attacks.ultimate.launched = true;
+                console.log(`Player : ${players.indexOf(player) + 1} ultimate launched`);
+            }
+        
+            break;
+
+        case 'primary':
+            const ennemyPlayer = players.filter(p => p != player)[0];
+            const ennemyPlayerIndex = players.indexOf(ennemyPlayer);
+            player.weaponDomElement.style.display = 'block';
+
+            console.log(player.x + player.weaponDomElement.offsetWidth, ennemyPlayer.x + ennemyPlayer.playerDomElement.offsetWidth,player.x + player.weaponDomElement.offsetWidth, ennemyPlayer.x );
+            if(player.x + player.weaponDomElement.offsetWidth < ennemyPlayer.x + ennemyPlayer.playerDomElement.offsetWidth && player.x + player.weaponDomElement.offsetWidth > ennemyPlayer.x) {
+                if(player.y < ennemyPlayer.y + ennemyPlayer.playerDomElement.offsetHeight && player.y + player.weaponDomElement.offsetHeight > ennemyPlayer.y) {
+                    if (!player.attacks.primary.launched) {
+                        player.attacks.primary.launched = true;
+                        ennemyPlayer.health -= player.attacks.primary.damages;
+                        ennemyPlayer.healthPercentageDom.style.width = ((1 - (ennemyPlayer.health/baseHealth))* 100) + '%';
+                        ennemyPlayer.healthPercentageDom.style.display = 'block';
+                    }
+                }
+            }
+
+            players[ennemyPlayerIndex] = ennemyPlayer;
+
+            break;
+    }
 }
