@@ -16,7 +16,7 @@
         <source src="./assets/gaming-8bit-music-hyperloop-by-infraction-amp-alexi-action-124334.mp3" type="audio/mpeg">
     </audio>
     <div id="game">
-        <canvas id="canvas" height="100%" width="100%" style="position: absolute; top: 0; z-index: 50;"></canvas>
+        <canvas id="canvas" height="100%" width="100%" style="position: absolute; top: 0; z-index: 50; transform: rotate(180deg) scaleX(-1);"></canvas>
         <div class="img-pos">
             <div class="img-wrap">
                 <img src="./assets/landscape.png"/>
@@ -28,20 +28,58 @@
             </div>
         </div>
         <div class="game-bar">
-            <div style="flex-grow: 5;">
-                <div class="health-container">
-                    <div id="hide-health-p1"></div>
-                    <div id="health-p1" class="p1-health health"></div>
+            <div style="display: flex; flex-direction: column; width: 100%;">
+                <div style="display: flex; width: 100%;">
+                    <div style="flex-grow: 5;">
+                        <div class="health-container">
+                            <div id="hide-health-p1"></div>
+                            <div id="health-p1" class="p1-health health"></div>
+                        </div>
+                    </div>
+                    <div style="flex-grow: 2; text-align: center; z-index: 1; font-family: 'VT323', monospace; font-size: 54px;">
+                        VS
+                        <div style="font-size: 16px;">Press 'm' to play music</div>
+                    </div>
+                    <div style="flex-grow: 5; text-align: right;">
+                        <div class="health-container">
+                            <div id="hide-health-p2"></div>
+                            <div id="health-p2" class="p2-health health"></div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div style="flex-grow: 2; text-align: center; z-index: 1; font-family: 'VT323', monospace; font-size: 54px;">
-                VS
-                <div style="font-size: 16px;">Press 'm' to play music</div>
-            </div>
-            <div style="flex-grow: 5; text-align: right;">
-                <div class="health-container">
-                    <div id="hide-health-p2"></div>
-                    <div id="health-p2" class="p2-health health"></div>
+                <div style="display: flex; width: 100%; justify-content: space-between;">
+                    <div style="display: flex; flex-direction : column; gap: 32px;">
+                        <div id="primary-icon-p1" class="attack-icon">
+                            <div class="img-pos">
+                                <div class="img-wrap">
+                                    <img id="img-p1" src="./assets/coutal_beurre.png"/>
+                                </div> 
+                            </div>
+                        </div>
+                        <div id="ultimate-icon-p1" class="attack-icon">
+                            <div class="img-pos">
+                                <div class="img-wrap">
+                                    <img id="img-p1" src="./assets/milk_bucketpng.png"/>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                    <div id="ultimate-icon-p1" style="display: flex; flex-direction : column; gap: 32px;">
+                        <div id="primary-icon-p2" class="attack-icon" style="transform: scaleX(-1)">
+                            <div class="img-pos">
+                                <div class="img-wrap">
+                                    <img id="img-p1" src="./assets/coutal_beurre.png"/>
+                                </div> 
+                            </div>
+                        </div>
+                        <div id="ultimate-icon-p2" class="attack-icon">
+                            <div class="img-pos">
+                                <div class="img-wrap">
+                                    <img id="img-p2" src="./assets/milk_bucketpng.png"/>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -74,6 +112,20 @@
             <div class="img-pos">
                 <div class="img-wrap">
                     <img src="./assets/meuh.png" alt="player2"/>
+                </div>
+            </div>
+        </div>
+        <div id="ultimate-p1">
+            <div class="img-pos">
+                <div class="img-wrap">
+                    <img src="./assets/milk_bucketpng.png"/>
+                </div>
+            </div>
+        </div>
+        <div id="ultimate-p2">
+            <div class="img-pos">
+                <div class="img-wrap">
+                    <img src="./assets/milk_bucketpng.png"/>
                 </div>
             </div>
         </div>

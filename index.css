@@ -1,5 +1,5 @@
 body {
-    margin : 0;
+    margin: 0;
     box-sizing: border-box;
     overflow: hidden;
 }
@@ -73,13 +73,13 @@ img {
 }
 
 .p1-health {
-    background: rgb(3,228,59);
-    background: linear-gradient(90deg, rgba(3,228,59,1) 23%, rgba(224,212,11,1) 50%, rgba(224,11,11,1) 75%);
+    background: rgb(3, 228, 59);
+    background: linear-gradient(90deg, rgba(3, 228, 59, 1) 23%, rgba(224, 212, 11, 1) 50%, rgba(224, 11, 11, 1) 75%);
 }
 
 .p2-health {
-    background: rgb(3,228,59);
-    background: linear-gradient(90deg, rgba(224,11,11,1) 23%, rgba(224,212,11,1) 50%, rgba(3,228,59,1) 75%);
+    background: rgb(3, 228, 59);
+    background: linear-gradient(90deg, rgba(224, 11, 11, 1) 23%, rgba(224, 212, 11, 1) 50%, rgba(3, 228, 59, 1) 75%);
 }
 
 .health {
@@ -125,8 +125,8 @@ img {
     overflow: hidden;
     margin: 0;
 }
-  
-.img-wrap > img {
+
+.img-wrap>img {
     display: block;
     position: absolute;
     top: 50%;
@@ -134,7 +134,7 @@ img {
     min-height: 100%;
     min-width: 100%;
     transform: translate(-50%, -50%);
-  }
+}
 
 .img-pos {
     width: 100%;
@@ -145,4 +145,25 @@ img {
 
 #img-p1 {
     transform: translate(-50%, -50%) scaleX(-1);
+}
+
+#ultimate-p1,
+#ultimate-p2 {
+    display: none;
+    width: 175px;
+    height: 175px;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+}
+
+.attack-icon {
+    background-color: blue;
+    width: 60px;
+    height: 60px;
+    z-index: 1000;
+    position: relative;
+    box-shadow: rgba(100, 100, 111, 1) 0px 7px 29px 0px;
+    border-radius: 8px;
+    box-sizing: border-box;
 }

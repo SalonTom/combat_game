@@ -18,12 +18,25 @@ class Player {
             timer : 0,
             launched : false,
             ready : false,
-            damages : 5
+            damages : 5,
+            iconDomElement : ''
         },
         ultimate : {
             timer : 15,
             launched : false,
-            ready : false
+            ready : false,
+            desc : {
+                type: "unique",
+                x0: 0,
+                y0: 0,
+                postionX: 0,
+                postionY: 0,
+                timer: 0,
+                equationX : () => {},
+                equationY : () => {},
+                iconDomElement : ''
+            },
+            ultimateDomElement : ''
         }
     };
 
@@ -55,29 +68,6 @@ const canvas = document.getElementById("canvas");
 canvas.width = game.offsetWidth;
 canvas.height = game.offsetHeight;
 const ctx = canvas.getContext("2d");
-
-
-// const blocks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 363, 364, 364, 364, 364, 560, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 363, 364, 364, 364, 364, 560, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
     
 const blocks = [
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -153,6 +143,14 @@ const healthPLayer2 = document.getElementById('health-p2');
 const healthPercentageP1 = document.getElementById('hide-health-p1');
 const healthPercentageP2 = document.getElementById('hide-health-p2');
 
+const ultimateP1 = document.getElementById('ultimate-p1');
+const ultimateP2 = document.getElementById('ultimate-p2');
+
+const ultimateIconP1 = document.getElementById('ultimate-icon-p1');
+const ultimateIconP2 = document.getElementById('ultimate-icon-p2');
+
+const primaryIconP1 = document.getElementById('primary-icon-p1');
+const primaryIconP2 = document.getElementById('primary-icon-p2');
 
 /** Création player 1 */
 let p1 = new Player();
@@ -164,6 +162,12 @@ p1.weaponY = weaponPlayer1.getBoundingClientRect().top + window.scrollY;
 p1.playerDomElement = player1;
 p1.healthPercentageDom = healthPercentageP1;
 p1.keys = ['q', 'd', ' ', 'z', 'a'];
+p1.attacks.ultimate.ultimateDomElement = ultimateP1;
+p1.attacks.ultimate.iconDomElement = ultimateIconP1;
+p1.attacks.ultimate.desc.equationX = function move(x0, t) { return Math.cos(45)*90*t + x0 };
+p1.attacks.ultimate.desc.equationY = function move(y0, t) { return -0.5*9.81*(t**2) + Math.sin(45)*90*t + y0 };
+p1.attacks.primary.iconDomElement = primaryIconP1;
+
 
 /** Création player 2 */
 let p2 = new Player();
@@ -175,6 +179,11 @@ p2.weaponY = weaponPlayer2.getBoundingClientRect().top + window.scrollY;
 p2.playerDomElement = player2;
 p2.healthPercentageDom = healthPercentageP2;
 p2.keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', '1', '2']
+p2.attacks.ultimate.ultimateDomElement = ultimateP2;
+p2.attacks.ultimate.iconDomElement = ultimateIconP2;
+p2.attacks.ultimate.desc.equationX = function move(x0, t) { return -Math.cos(45)*90*t + x0};
+p2.attacks.ultimate.desc.equationY = function move(y0, t) { return -0.5*9.81*(t**2) + Math.sin(45)*90*t + y0 };
+p2.attacks.primary.iconDomElement = primaryIconP2;
 
 
 const players = [p1,p2];
@@ -210,11 +219,13 @@ window.addEventListener('keyup', (e) => {
     if (e.key == ' ') {
         players[0].weaponDomElement.style.display = 'none';
         players[0].attacks.primary.launched = false;
+        players[0].attacks.primary.iconDomElement.style.border = 'none';
     }
 
     if (e.key == '1') {
         players[1].weaponDomElement.style.display = 'none';
         players[1].attacks.primary.launched = false;
+        players[1].attacks.primary.iconDomElement.style.border = 'none';
     }
 
     if (e.key == 'm') {
@@ -236,7 +247,38 @@ const gameIsPlayed = setInterval(() => {
 
         if (player.attacks.ultimate.timer % 100 == 0 && !player.attacks.ultimate.ready) {
             player.attacks.ultimate.ready = true;
+            player.attacks.ultimate.iconDomElement.style.border = 'inset 2px orange';
             console.log(`player ${players.indexOf(player) + 1} ability ready`);
+        } else {
+            player.attacks.ultimate.iconDomElement.style.opacity = player.attacks.ultimate.timer / 100
+        }
+
+        if (player.attacks.ultimate.launched) {
+
+            player.attacks.ultimate.desc.timer += 1; 
+
+            player.attacks.ultimate.ultimateDomElement.style.display = 'block';
+            player.attacks.ultimate.iconDomElement.style.border = 'none';
+
+            player.attacks.ultimate.postionX = player.attacks.ultimate.desc.equationX(player.attacks.ultimate.x0, player.attacks.ultimate.desc.timer);
+            player.attacks.ultimate.postionY = player.attacks.ultimate.desc.equationY(player.attacks.ultimate.y0, player.attacks.ultimate.desc.timer);
+            
+            player.attacks.ultimate.ultimateDomElement.style.left = player.attacks.ultimate.postionX  + 'px';
+            player.attacks.ultimate.ultimateDomElement.style.bottom = player.attacks.ultimate.postionY + 'px';
+
+
+            if (player.attacks.ultimate.postionX < - 100 || player.attacks.ultimate.postionX > game.offsetWidth + 100 || player.attacks.ultimate.postionY < -100) {
+                player.attacks.ultimate.launched = false;
+                player.attacks.ultimate.ultimateDomElement.style.display = 'none';
+                player.attacks.ultimate.desc.timer = 0;
+            }
+
+        } else {
+            player.attacks.ultimate.x0 = player.x;
+            player.attacks.ultimate.y0 = player.y;       
+
+            player.attacks.ultimate.ultimateDomElement.style.bottom = player.attacks.ultimate.postionY;
+            player.attacks.ultimate.ultimateDomElement.style.left = player.attacks.ultimate.postionX;
         }
 
         if (player.jumped && !player.isGoingDown) {
@@ -306,8 +348,8 @@ function act() {
                         break;
                     
                     case ' ':
+
                         attack(player, 'primary');
-        
                         break;
 
                     case 'a' :
@@ -318,6 +360,7 @@ function act() {
         
                     case '1':
                         p2.weaponDomElement.style.display = 'block';
+                        p2.attacks.primary.iconDomElement.style.border = 'inset 2px orange';
         
                         if(p2.x - p2.weaponDomElement.offsetWidth + p2.playerDomElement.offsetWidth > p1.x && p2.x - p1.playerDomElement.offsetWidth + p2.playerDomElement.offsetWidth < p1.x + p1.playerDomElement.offsetWidth) {
                             if(p2.y < p1.y + p1.playerDomElement.offsetHeight && p2.y + p2.weaponDomElement.offsetHeight > p1.y) {
@@ -408,6 +451,7 @@ function attack(player, type) {
             const ennemyPlayer = players.filter(p => p != player)[0];
             const ennemyPlayerIndex = players.indexOf(ennemyPlayer);
             player.weaponDomElement.style.display = 'block';
+            player.attacks.primary.iconDomElement.style.border = 'inset 2px orange';
 
             console.log(player.x + player.weaponDomElement.offsetWidth, ennemyPlayer.x + ennemyPlayer.playerDomElement.offsetWidth,player.x + player.weaponDomElement.offsetWidth, ennemyPlayer.x );
             if(player.x + player.weaponDomElement.offsetWidth < ennemyPlayer.x + ennemyPlayer.playerDomElement.offsetWidth && player.x + player.weaponDomElement.offsetWidth > ennemyPlayer.x) {
