@@ -191,6 +191,8 @@ const targetJump = 6*blockHeight;
 const jumpTimeMs = 300;
 const timerStepMs = 20;
 
+let musicPlaying = false;
+
 p1.velocityY = (targetJump / (jumpTimeMs / 20));
 p2.velocityY = (targetJump / (jumpTimeMs / 20));
 
@@ -213,6 +215,16 @@ window.addEventListener('keyup', (e) => {
     if (e.key == '1') {
         players[1].weaponDomElement.style.display = 'none';
         players[1].attacks.primary.launched = false;
+    }
+
+    if (e.key == 'm') {
+        if (musicPlaying) {
+            musicPlaying = false;
+            document.querySelector("audio").pause();
+        } else {
+            musicPlaying = true;
+            document.querySelector("audio").play();
+        }
     }
 });
 
