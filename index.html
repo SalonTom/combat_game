@@ -13,7 +13,7 @@
 </head>
 <body>
     <audio hidden id="audio">
-        <source src="./assets/gaming-8bit-music-hyperloop-by-infraction-amp-alexi-action-124334.mp3" type="audio/mpeg">
+        <source src="./assets/musics/gaming-8bit-music-hyperloop-by-infraction-amp-alexi-action-124334.mp3" type="audio/mpeg">
     </audio>
     <div id="game">
         <canvas id="canvas" height="100%" width="100%" style="position: absolute; top: 0; z-index: 50; transform: rotate(180deg) scaleX(-1);"></canvas>
@@ -24,7 +24,7 @@
         </div>
         <div class="img-pos">
             <div class="img-wrap">
-                <img src="./assets/map.png"/>
+                <img id="map" src=""/>
             </div>
         </div>
         <div class="game-bar">
@@ -132,6 +132,10 @@
     </div>
 
     
+    <script src="classes/Player.js"></script>
+    <script src="classes/CollisionBlock.js"></script>
+    <script src="classes/GameMap.js"></script>
+    <script src="utils/map/mapsUtils.js"></script>
     <script src="index.js"></script>
 </body>
 </html>
