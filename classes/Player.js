@@ -1,5 +1,8 @@
 /** Class Player. Contient toutes les informations relatives aux joueurs */
 class Player {
+    /** Player id : 1 start on the left, 2 start on the right */
+    id;
+
     /** Position x */
     x;
 
@@ -17,15 +20,6 @@ class Player {
 
     /** Permet de savoir à quel niveau se situe le joueur par rapport aux plateformes */
     levelIndex = 1;
-
-    /** Element du DOM pour l'arme primaire */
-    weaponDomElement;
-
-    /** Position x de l'arme */
-    weaponX;
-
-    /** Position y de l'arme */
-    weaponY;
 
     /** Le joueur a-t+il sauté ? */
     jumped = false;
@@ -49,7 +43,8 @@ class Player {
             launched : false,
             ready : false,
             damages : 5,
-            iconDomElement : ''
+            iconDomElement : '',
+            attackDomElement : ''
         },
         ultimate : {
             timer : 15,
@@ -73,4 +68,14 @@ class Player {
 
     /** Touches associés au joueur */
     keys = []
+
+    /** get Position x de l'arme */
+    get weaponX() {
+        return this.id === 1 ? this.x + this.playerDomElement.offsetWidth : this.x
+    };
+
+    /** Get Position y de l'arme */
+    get weaponY() {
+        return this.y + this.attacks.primary.attackDomElement.offsetHeight*4/5
+    };
 }

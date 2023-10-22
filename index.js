@@ -89,13 +89,12 @@ player2.style.height = blockHeight * 2.5 + 'px';
 
 /** Création player 1 */
 let p1 = new Player();
+p1.id = 1
 p1.x = 0;
 p1.y = 0;
 p1.velocityX = blockWidth/3;
 p1.velocityY = (targetJump / (jumpTimeMs / 20));
-p1.weaponDomElement = weaponPlayer1;
-p1.weaponX = weaponPlayer1.getBoundingClientRect().left + window.scrollX;
-p1.weaponY = weaponPlayer1.getBoundingClientRect().top + window.scrollY;
+p1.attacks.primary.attackDomElement = weaponPlayer1;
 p1.playerDomElement = player1;
 p1.healthPercentageDom = healthPercentageP1;
 p1.keys = ['q', 'd', ' ', 'z', 'a'];
@@ -108,13 +107,12 @@ p1.attacks.primary.iconDomElement = primaryIconP1;
 
 /** Création player 2 */
 let p2 = new Player();
+p2.id = 2
 p2.x = game.offsetWidth - player2.offsetWidth;
 p2.y = 0;
 p2.velocityX = blockWidth/3;
 p2.velocityY = (targetJump / (jumpTimeMs / 20));
-p2.weaponDomElement = weaponPlayer2;
-p2.weaponX = weaponPlayer2.getBoundingClientRect().left + window.scrollX;
-p2.weaponY = weaponPlayer2.getBoundingClientRect().top + window.scrollY;
+p2.attacks.primary.attackDomElement = weaponPlayer2;
 p2.playerDomElement = player2;
 p2.healthPercentageDom = healthPercentageP2;
 p2.keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', '1', '2']
@@ -147,13 +145,13 @@ window.addEventListener('keyup', (e) => {
      * Le joueur devra relacher puis appuyer de nouveau sur la touche s'il veut inlfiger de nouveaux dégats.
      */
     if (e.key == ' ') {
-        players[0].weaponDomElement.style.display = 'none';
+        players[0].attacks.primary.attackDomElement.style.display = 'none';
         players[0].attacks.primary.launched = false;
         players[0].attacks.primary.iconDomElement.style.border = 'none';
     }
 
     if (e.key == '1') {
-        players[1].weaponDomElement.style.display = 'none';
+        players[1].attacks.primary.attackDomElement.style.display = 'none';
         players[1].attacks.primary.launched = false;
         players[1].attacks.primary.iconDomElement.style.border = 'none';
     }
@@ -182,20 +180,28 @@ const gameIsPlayed = setInterval(() => {
 
         player.attacks.ultimate.timer += 1;
 
+        /** 
+         * Si l'utlitmate est chargé et qu'il n'est pas déjà prêt, on le passe ready et on anime l'icone de l'attaque.
+         * Sinon, on incrémente le timer de l'attaque et modifie l'opacité de l'icone de l'attaque (de plus en plus clair).
+         */
         if (player.attacks.ultimate.timer % 100 == 0 && !player.attacks.ultimate.ready) {
             player.attacks.ultimate.ready = true;
             player.attacks.ultimate.iconDomElement.style.border = 'inset 2px orange';
-            console.log(`player ${players.indexOf(player) + 1} ability ready`);
+            console.log(`player ${player.id} ability ready`);
         } else {
             player.attacks.ultimate.iconDomElement.style.opacity = player.attacks.ultimate.timer / 100
         }
 
+        /** Si l'attaque est lancée, on calcule sa trajectoire et applique les damages, effets ... */
         if (player.attacks.ultimate.launched) {
 
-            player.attacks.ultimate.trajectory.timer += 1; 
-
+            /** On affiche l'attaque dans le DOM */
             player.attacks.ultimate.attackDomElement.style.display = 'block';
             player.attacks.ultimate.iconDomElement.style.border = 'none';
+
+
+            /** Calcul des nouvelles coordonnées de l'attaque et mise à jour du DOM */
+            player.attacks.ultimate.trajectory.timer += 1; 
 
             player.attacks.ultimate.postionX = player.attacks.ultimate.trajectory.equationX(player.attacks.ultimate.x0, player.attacks.ultimate.trajectory.timer);
             player.attacks.ultimate.postionY = player.attacks.ultimate.trajectory.equationY(player.attacks.ultimate.y0, player.attacks.ultimate.trajectory.timer);
@@ -203,7 +209,26 @@ const gameIsPlayed = setInterval(() => {
             player.attacks.ultimate.attackDomElement.style.left = player.attacks.ultimate.postionX  + 'px';
             player.attacks.ultimate.attackDomElement.style.bottom = player.attacks.ultimate.postionY + 'px';
 
+            /** Application des damages */
+            const ennemy = players[2 - player.id];
 
+            const ultimateCenterX = player.attacks.ultimate.postionX + (player.attacks.ultimate.attackDomElement.offsetWidth)/2;
+            const ultimateCenterY = player.attacks.ultimate.postionY + (player.attacks.ultimate.attackDomElement.offsetHeight)/2;
+
+            if (objectsCollide(ultimateCenterX, ultimateCenterY, ennemy.x, ennemy.y, ennemy.playerDomElement.offsetWidth, ennemy.playerDomElement.offsetHeight)) {
+                console.log(`Player ${player.id} hit player ${ennemy.id}`)
+
+                updatePlayerHealth(ennemy, player.attacks.ultimate.damages)
+
+                players[2 - player.id] = ennemy;
+
+                player.attacks.ultimate.launched = false;
+                player.attacks.ultimate.attackDomElement.style.display = 'none';
+                player.attacks.ultimate.trajectory.timer = 0;
+            }
+
+
+            /** Si l'attaque n'est plus dans le cadre du jeu, on considére l'attaque comme terminée. */
             if (player.attacks.ultimate.postionX < - 100 || player.attacks.ultimate.postionX > game.offsetWidth + 100 || player.attacks.ultimate.postionY < -100) {
                 player.attacks.ultimate.launched = false;
                 player.attacks.ultimate.attackDomElement.style.display = 'none';
@@ -211,11 +236,11 @@ const gameIsPlayed = setInterval(() => {
             }
 
         } else {
+
+            /** MAJ de la position de départ de l'attaque en fonction du joueur */
             player.attacks.ultimate.x0 = player.x;
             player.attacks.ultimate.y0 = player.y;       
 
-            player.attacks.ultimate.attackDomElement.style.bottom = player.attacks.ultimate.postionY;
-            player.attacks.ultimate.attackDomElement.style.left = player.attacks.ultimate.postionX;
         }
 
 
@@ -263,7 +288,7 @@ const gameIsPlayed = setInterval(() => {
         /** ------------------------- END OF GAME -------------------------*/
 
 
-        if (player.health == 0) {
+        if (player.health <= 0) {
             clearInterval(gameIsPlayed)
             if(!alert('Player ' + (2 - index) + ' won!')) window.location.reload();
         }
@@ -303,6 +328,7 @@ function act() {
                         break;
                     
                     case ' ':
+                    case '1':
 
                         attack(player, 'primary');
                         break;
@@ -311,22 +337,6 @@ function act() {
                     case '2' :
 
                         attack(player, 'ultimate');
-                        break;
-        
-                    case '1':
-                        p2.weaponDomElement.style.display = 'block';
-                        p2.attacks.primary.iconDomElement.style.border = 'inset 2px orange';
-        
-                        if(p2.x - p2.weaponDomElement.offsetWidth + p2.playerDomElement.offsetWidth > p1.x && p2.x - p1.playerDomElement.offsetWidth + p2.playerDomElement.offsetWidth < p1.x + p1.playerDomElement.offsetWidth) {
-                            if(p2.y < p1.y + p1.playerDomElement.offsetHeight && p2.y + p2.weaponDomElement.offsetHeight > p1.y) {
-                                if (!p2.attacks.primary.launched) {
-                                    p2.attacks.primary.launched = true;
-                                    p1.health -= p2.attacks.primary.damages;
-                                    healthPercentageP1.style.width = ((1 - (p1.health/baseHealth))* 100) + '%'
-                                    healthPercentageP1.style.display = 'block'
-                                }
-                            }
-                        }
                         break;
                 }
             }
@@ -359,8 +369,8 @@ function playerOnPlatform(player) {
  * Retourne true si object1 est dans la zone d'object2.
  * Possibilité de préciser une offsetHeight et un offsetwidth pour l'object2
 */
-function objectsCollide(object1x, object1y, object2x, object2y, offsetHeight2, offsetWidth2) {
-    if (object1y > object2y && object1y < object2y + offsetHeight2) {
+function objectsCollide(object1x, object1y, object2x, object2y, offsetWidth2, offsetHeight2) {
+    if (object1y >= object2y && object1y <= object2y + offsetHeight2) {
         if (object1x >= object2x && object1x <= object2x + offsetWidth2) {
             return true;
         }
@@ -424,17 +434,14 @@ function attack(player, type) {
             const ennemyPlayerIndex = players.indexOf(ennemyPlayer);
 
             /** On affiche l'arme et on anime l'icone */
-            player.weaponDomElement.style.display = 'block';
+            player.attacks.primary.attackDomElement.style.display = 'block';
             player.attacks.primary.iconDomElement.style.border = 'inset 2px orange';
 
-            if(player.x + player.weaponDomElement.offsetWidth < ennemyPlayer.x + ennemyPlayer.playerDomElement.offsetWidth && player.x + player.weaponDomElement.offsetWidth > ennemyPlayer.x) {
-                if(player.y < ennemyPlayer.y + ennemyPlayer.playerDomElement.offsetHeight && player.y + player.weaponDomElement.offsetHeight > ennemyPlayer.y) {
-                    if (!player.attacks.primary.launched) {
-                        player.attacks.primary.launched = true;
-                        ennemyPlayer.health -= player.attacks.primary.damages;
-                        ennemyPlayer.healthPercentageDom.style.width = ((1 - (ennemyPlayer.health/baseHealth))* 100) + '%';
-                        ennemyPlayer.healthPercentageDom.style.display = 'block';
-                    }
+            if (objectsCollide(player.weaponX, player.weaponY, ennemyPlayer.x, ennemyPlayer.y, ennemyPlayer.playerDomElement.offsetWidth, ennemyPlayer.playerDomElement.offsetHeight)) {
+                if (!player.attacks.primary.launched) {
+                    player.attacks.primary.launched = true;
+
+                    updatePlayerHealth(ennemyPlayer, player.attacks.primary.damages);
                 }
             }
 
@@ -442,4 +449,10 @@ function attack(player, type) {
 
             break;
     }
+}
+
+function updatePlayerHealth(player, damages) {
+    player.health -= damages;
+    player.healthPercentageDom.style.width = ((1 - (player.health/baseHealth))* 100) + '%';
+    player.healthPercentageDom.style.display = 'block';
 }
