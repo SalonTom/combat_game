@@ -6,6 +6,11 @@
 /** Div contenant tout le jeu */
 const game = document.getElementById('game');
 
+/** Div pour affichage de fin de partie */
+const gameOver = document.getElementById('game-over');
+/** Div pour affichage du joueur vainqueur */
+const winner = document.getElementById('winner');
+
 /** Canvas couvrant tout le jeu pour afficher diverses informations si nécessaires */
 const canvas = document.getElementById("canvas");
 canvas.width = game.offsetWidth;
@@ -87,12 +92,17 @@ player2.style.width = blockWidth * 2 + 'px';
 player1.style.height = blockHeight * 2.5 + 'px';
 player2.style.height = blockHeight * 2.5 + 'px';
 
+ultimateP1.style.width = 3*blockWidth + 'px';
+ultimateP1.style.height = 4*blockHeight + 'px';
+ultimateP2.style.width = 3*blockWidth + 'px';
+ultimateP2.style.height = 4*blockHeight + 'px';
+
 /** Création player 1 */
 let p1 = new Player();
 p1.id = 1
 p1.x = 0;
 p1.y = 0;
-p1.velocityX = blockWidth/3;
+p1.velocityX = 20*blockWidth;
 p1.velocityY = (targetJump / (jumpTimeMs / 20));
 p1.attacks.primary.attackDomElement = weaponPlayer1;
 p1.playerDomElement = player1;
@@ -110,8 +120,8 @@ let p2 = new Player();
 p2.id = 2
 p2.x = game.offsetWidth - player2.offsetWidth;
 p2.y = 0;
-p2.velocityX = blockWidth/3;
-p2.velocityY = (targetJump / (jumpTimeMs / 20));
+p2.velocityX = 20*blockWidth;
+p2.velocityY = (targetJump / (jumpTimeMs / timerStepMs));
 p2.attacks.primary.attackDomElement = weaponPlayer2;
 p2.playerDomElement = player2;
 p2.healthPercentageDom = healthPercentageP2;
@@ -289,8 +299,10 @@ const gameIsPlayed = setInterval(() => {
 
 
         if (player.health <= 0) {
-            clearInterval(gameIsPlayed)
-            if(!alert('Player ' + (2 - index) + ' won!')) window.location.reload();
+            clearInterval(gameIsPlayed);
+            gameOver.style.opacity = '1';
+
+            winner.innerText = `Player ${2 - index} won the game !`
         }
     });
 
@@ -388,15 +400,15 @@ function movePlayer(player, direction) {
 
     switch(direction) {
         case 'left':
-            if (player.x - player.velocityX >= 0) {
-                player.x -= player.velocityX;
+            if (player.x - (timerStepMs * player.velocityX/1000) >= 0) {
+                player.x -= timerStepMs * player.velocityX/1000;
                 player.playerDomElement.style.left = player.x + 'px';
             }
         break;
 
         case 'right':
-            if (player.x + player.velocityX + player.playerDomElement.offsetWidth < game.offsetWidth) {
-                player.x += player.velocityX;
+            if (player.x + (timerStepMs * player.velocityX/1000) + player.playerDomElement.offsetWidth < game.offsetWidth) {
+                player.x += timerStepMs * player.velocityX/1000;
                 player.playerDomElement.style.left = player.x + 'px';
             }
         break;
