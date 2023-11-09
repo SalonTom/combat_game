@@ -160,33 +160,31 @@ img {
     box-sizing: border-box;
 }
 
-.end-game-screen-bg {
+.bg-blur {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    backdrop-filter: blur(3.5px);
 
     display: flex;
     justify-content: center;
     align-content: center;
     flex-wrap: wrap;
 
-    opacity: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    backdrop-filter: blur(3.5px);
 }
 
-.end-game-screen {
+.game-screen {
     z-index: 900;
     text-shadow: 0 0px 4px rgba(0, 0, 0, 1);
     text-align: center;
     color: white;
     font-family: 'VT323', monospace;
     font-size: 54px;
-    width: 25%;
+    width: fit-content;
 }
 
 .button {
@@ -198,4 +196,8 @@ img {
 .button:hover {
     transform: scale(1.2);
     cursor: pointer;
+}
+
+#game-over {
+    display: none;
 }
