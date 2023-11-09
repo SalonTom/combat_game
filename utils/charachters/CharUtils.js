@@ -8,8 +8,17 @@ class CharUtils {
             'Close range combat. Deals <b>5</b> damages.',
             'assets/character/cow/weapons/milk_bucketpng.png',
             'Throw a milk bucket at your opponent. Deals <b>15</b> damages.',
-            function move(x0, t) { return Math.cos(45)*90*t + x0 },
-            function move(y0, t) { return -0.5*9.81*(t**2) + Math.sin(45)*90*t + y0 }
+            
+            [
+                {
+                    ultEquaX: function move(x0, t) { return Math.cos(45)*90*t + x0 },
+                    ultEquaY: function move(y0, t) { return -0.5*9.81*(t**2) + Math.sin(45)*90*t + y0 }
+                }, 
+                {
+                    ultEquaX: function move(x0, t) { return -Math.cos(45)*90*t + x0 },
+                    ultEquaY: function move(y0, t) { return -0.5*9.81*(t**2) + Math.sin(45)*90*t + y0 }
+                }
+            ]
         )
     ];
 

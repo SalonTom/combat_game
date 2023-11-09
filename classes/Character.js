@@ -1,5 +1,5 @@
 class Character {
-    constructor(id, name, pngSrc, primarySrc, primaryDesc, ultimateSrc, ultimateDesc, ultEquaX, ultEquaY) {
+    constructor(id, name, pngSrc, primarySrc, primaryDesc, ultimateSrc, ultimateDesc, ultEqua) {
         this.id = id;
 
         /** Nom du personnage */
@@ -21,8 +21,7 @@ class Character {
         this.ultimateDesc = ultimateDesc;
 
         /** Ultimate equation */
-        this.attacks.ultimate.trajectory.equationX = ultEquaX;
-        this.attacks.ultimate.trajectory.equationY = ultEquaY;
+        this.ultimateEqua = ultEqua;
     }
 
     attacks = {

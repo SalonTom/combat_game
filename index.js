@@ -163,8 +163,8 @@ p1.healthPercentageDom = healthPercentageP1;
 p1.keys = ['q', 'd', ' ', 'z', 'a'];
 p1.attacks.ultimate.attackDomElement = ultimateP1;
 p1.attacks.ultimate.iconDomElement = ultimateIconP1;
-p1.attacks.ultimate.trajectory.equationX = chars[0].attacks.ultimate.trajectory.equationX;
-p1.attacks.ultimate.trajectory.equationY = chars[0].attacks.ultimate.trajectory.equationY;
+p1.attacks.ultimate.trajectory.equationX = chars[0].ultimateEqua[0].ultEquaX;
+p1.attacks.ultimate.trajectory.equationY = chars[0].ultimateEqua[0].ultEquaY;
 p1.attacks.primary.iconDomElement = primaryIconP1;
 
 
@@ -181,8 +181,8 @@ p2.healthPercentageDom = healthPercentageP2;
 p2.keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', '1', '2']
 p2.attacks.ultimate.attackDomElement = ultimateP2;
 p2.attacks.ultimate.iconDomElement = ultimateIconP2;
-p2.attacks.ultimate.trajectory.equationX = chars[1].attacks.ultimate.trajectory.equationX;
-p2.attacks.ultimate.trajectory.equationY = chars[1].attacks.ultimate.trajectory.equationY;
+p2.attacks.ultimate.trajectory.equationX = chars[1].ultimateEqua[1].ultEquaX;
+p2.attacks.ultimate.trajectory.equationY = chars[1].ultimateEqua[1].ultEquaY;
 p2.attacks.primary.iconDomElement = primaryIconP2;
 
 const players = [p1,p2];
