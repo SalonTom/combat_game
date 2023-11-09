@@ -19,7 +19,7 @@
         <canvas id="canvas" height="100%" width="100%" style="position: absolute; top: 0; z-index: 50; transform: rotate(180deg) scaleX(-1);"></canvas>
         <div class="img-pos">
             <div class="img-wrap">
-                <img src="./assets/landscape.png"/>
+                <img id="bg" src="./assets/backgrounds/landscape_fuji.jpg"/>
             </div>
         </div>
         <div class="img-pos">
@@ -88,14 +88,14 @@
                 <div id="weapon-p1" class="weapon">
                     <div class="img-pos">
                         <div class="img-wrap">
-                            <img id="img-p1" src="./assets/coutal_beurre.png" alt="player1"/>
+                            <img id="img-p1" src="" alt="player1"/>
                         </div> 
                     </div>
                 </div>
             </div>
-            <div class="img-pos">
+            <div id="img-char-p1" class="img-pos">
                 <div class="img-wrap">
-                    <img id="img-p1" src="./assets/meuh.png" alt="player1"/>
+                    <img id="img-p1" src="" alt="player1"/>
                 </div>
             </div>
         </div>
@@ -104,34 +104,142 @@
                 <div id="weapon-p2" class="weapon">
                     <div class="img-pos">
                         <div class="img-wrap">
-                            <img id="img-p1" src="./assets/coutal_beurre.png" alt="player1"/>
+                            <img id="img-p1" src="" alt="player1"/>
                         </div> 
                     </div>
                 </div>
             </div>
-            <div class="img-pos">
+            <div id="img-char-p2" class="img-pos">
                 <div class="img-wrap">
-                    <img src="./assets/meuh.png" alt="player2"/>
+                    <img src="" alt="player2"/>
                 </div>
             </div>
         </div>
         <div id="ultimate-p1">
             <div class="img-pos">
                 <div class="img-wrap">
-                    <img src="./assets/milk_bucketpng.png"/>
+                    <img src=""/>
                 </div>
             </div>
         </div>
         <div id="ultimate-p2">
             <div class="img-pos">
                 <div class="img-wrap">
-                    <img src="./assets/milk_bucketpng.png"/>
+                    <img src=""/>
+                </div>
+            </div>
+        </div>
+
+        <div id="home-screen">
+            <div class="bg-blur">
+                <div class="game-screen">
+                    Choose character
+                    <div style="display: flex; font-size: 24px; gap: 54px;">
+                        <div>
+                            <div style="border: solid 4px #FFC302; display: flex; flex-direction: column; align-items: center; gap: 16px; width: 30vw;">
+                                <div style="margin-top: 16px; margin-bottom: 16px;" id="p1-char-name"></div>
+                                <div style="height: 200px; width: 200px;">
+                                    <div class="img-wrap">
+                                        <img id="p1-char-png" src="" alt="player1"/>
+                                    </div>
+                                </div>
+                                <div>Attacks breakdown</div>
+                                <div style="margin-left: 8px; margin-right: 8px;">
+                                    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
+                                        <div style="height: 48px; width: 48px;">
+                                            <div class="img-wrap">
+                                                <img id="p1-char-primary-png" src="" alt="player2"/>
+                                            </div>
+                                        </div>
+                                        <div id="p1-char-primary-desc" ></div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 16px;">
+                                        <div style="height: 48px; width: 48px;">
+                                            <div class="img-wrap">
+                                                <img id="p1-char-ultimate-png" src="" alt="player1"/>
+                                            </div>
+                                        </div>
+                                        <div id="p1-char-ultimate-desc" ></div>
+                                    </div>
+                                </div>
+                                <div style="display: flex;">
+                                    <button id="p1-prev" onclick="nextChar(1, true)"><</button>
+                                    <div id="p1-validate">
+                                        <button onclick="validateChar(1)">Let's fight !</button>
+                                    </div>
+                                    <button id="p1-next" onclick="nextChar(1)">></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="border: solid 4px #FFC302; display: flex; flex-direction: column; align-items: center; gap: 16px; width: 30vw;">
+                                <div style="margin-top: 16px; margin-bottom: 16px;" id="p2-char-name"></div>
+                                <div style="height: 200px; width: 200px;">
+                                    <div class="img-wrap">
+                                        <img id="p2-char-png" src="" alt="player2"/>
+                                    </div>
+                                </div>
+                                <div>Attacks breakdown</div>
+                                <div style="margin-left: 8px; margin-right: 8px;">
+                                    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
+                                        <div style="height: 48px; width: 48px;">
+                                            <div class="img-wrap">
+                                                <img id="p2-char-primary-png" src="" alt="player2"/>
+                                            </div>
+                                        </div>
+                                        <div id="p2-char-primary-desc" ></div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 16px;">
+                                        <div style="height: 48px; width: 48px;">
+                                            <div class="img-wrap">
+                                                <img id="p2-char-ultimate-png" src="" alt="player2"/>
+                                            </div>
+                                        </div>
+                                        <div id="p2-char-ultimate-desc" ></div>
+                                    </div>
+                                </div>
+                                <div style="display: flex;">
+                                    <button id="p2-prev" onclick="nextChar(2, true)"><</button>
+                                    <div id="p2-validate">
+                                        <button onclick="validateChar(2)">Let's fight !</button>
+                                    </div>
+                                    <button id="p2-next" onclick="nextChar(2)">></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-over">
+            <div class="bg-blur">
+                <div class="game-screen">
+                    <div id="winner"></div>
+
+                    <div style="display: flex; justify-content: space-between; gap: 48px;">
+                        <div class="button" onclick="window.location.reload()">
+                            <div class="img-pos">
+                                <div class="img-wrap">
+                                    <img src="./assets/home-button.png"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="button" onclick="window.location.reload()">
+                            <div class="img-pos">
+                                <div class="img-wrap">
+                                    <img src="./assets/play-button.png"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    
+    <script src="classes/Character.js"></script>
+    <script src="utils/charachters/CharUtils.js"></script>
     <script src="classes/Player.js"></script>
     <script src="classes/CollisionBlock.js"></script>
     <script src="classes/GameMap.js"></script>

@@ -6,6 +6,11 @@
 /** Div contenant tout le jeu */
 const game = document.getElementById('game');
 
+/** Div pour affichage de fin de partie */
+const gameOver = document.getElementById('game-over');
+/** Div pour affichage du joueur vainqueur */
+const winner = document.getElementById('winner');
+
 /** Canvas couvrant tout le jeu pour afficher diverses informations si nécessaires */
 const canvas = document.getElementById("canvas");
 canvas.width = game.offsetWidth;
@@ -16,9 +21,13 @@ const ctx = canvas.getContext("2d");
 const player1 = document.getElementById('player1');
 const player2 = document.getElementById('player2');
 
+const playersDom = [player1, player2];
+
 /** Div contenant l'image de l'arme primaire */
 const weaponPlayer1 = document.getElementById('weapon-p1');
 const weaponPlayer2 = document.getElementById('weapon-p2');
+
+const weaponsDom = [weaponPlayer1, weaponPlayer2];
 
 /** Div pour afficher la santé totale */
 const healthPLayer1 = document.getElementById('health-p1');
@@ -32,13 +41,19 @@ const healthPercentageP2 = document.getElementById('hide-health-p2');
 const ultimateP1 = document.getElementById('ultimate-p1');
 const ultimateP2 = document.getElementById('ultimate-p2');
 
+const ultimatesDom = [ultimateP1, ultimateP2];
+
 /** Icon chargement ultimate */
 const ultimateIconP1 = document.getElementById('ultimate-icon-p1');
 const ultimateIconP2 = document.getElementById('ultimate-icon-p2');
 
+const ultimateIconsDom = [ultimateIconP1, ultimateIconP2];
+
 /** Icon chargement primary */
 const primaryIconP1 = document.getElementById('primary-icon-p1');
 const primaryIconP2 = document.getElementById('primary-icon-p2');
+
+const primaryIconsDom = [primaryIconP1, ultimateIconP2];
 
 
 /** ------------------------- MAP CONSTRUCTION -------------------------*/
@@ -54,7 +69,7 @@ blockWidth = (game.offsetWidth/this.numberTileWidth);
 blockHeight = (game.offsetHeight/this.numberTileHeight);
 
 const mapsUtils = new MapsUtils(numberTileHeight, numberTileWidth, blockHeight, blockWidth);
-const map = mapsUtils.getMapByName('Default');
+const map = mapsUtils.getRandomMap();
 
 const collisionBlocks = mapsUtils.buildMap(map);
 mapsUtils.setMapPng(map);
@@ -87,12 +102,60 @@ player2.style.width = blockWidth * 2 + 'px';
 player1.style.height = blockHeight * 2.5 + 'px';
 player2.style.height = blockHeight * 2.5 + 'px';
 
+ultimateP1.style.width = 3*blockWidth + 'px';
+ultimateP1.style.height = 4*blockHeight + 'px';
+ultimateP2.style.width = 3*blockWidth + 'px';
+ultimateP2.style.height = 4*blockHeight + 'px';
+
+
+/** ------------------------- PLAYERS CHOICE AND CREATION -------------------------*/
+
+let chars = [CharUtils.chars[0],  CharUtils.chars[0]];
+let remainingCharToSelect = 2;
+
+function showChar(char, playerId) {
+    document.getElementById('p' + playerId + '-char-name').innerHTML = char.name;
+    document.getElementById('p' + playerId + '-char-png').src = char.pngSrc;
+    document.getElementById('p' + playerId + '-char-primary-png').src = char.primarySrc;
+    document.getElementById('p' + playerId + '-char-primary-desc').innerHTML = char.primaryDesc;
+    document.getElementById('p' + playerId + '-char-ultimate-png').src = char.ultimateSrc;
+    document.getElementById('p' + playerId + '-char-ultimate-desc').innerHTML = char.ultimateDesc;
+    
+    document.querySelector('#img-char-p' + playerId + ' img').src = char.pngSrc;
+    document.querySelector('#weapon-p' + playerId + ' img').src = char.primarySrc;
+    document.querySelector('#ultimate-p' + playerId + ' img').src = char.ultimateSrc;
+    document.querySelector('#primary-icon-p' + playerId + ' img').src = char.primarySrc;
+    document.querySelector('#ultimate-icon-p' + playerId + ' img').src = char.ultimateSrc;
+}
+
+function nextChar(playerId, previous = false) {
+    const currentChar = chars[playerId - 1];
+    const newChar = CharUtils.nextPlayer(CharUtils.chars.indexOf(currentChar), previous);
+    showChar(newChar, playerId);
+    chars[playerId - 1] = newChar;
+}
+
+function validateChar(playerId) {
+    document.getElementById('p' + playerId + '-prev').style.display = 'none';
+    document.getElementById('p' + playerId + '-next').style.display = 'none';
+    document.getElementById('p' + playerId + '-validate').innerHTML = 'Ready to fight !';
+
+    remainingCharToSelect -= 1;
+
+    if (remainingCharToSelect == 0) {
+        document.getElementById('home-screen').style.display = 'none';
+    }
+}
+
+showChar(chars[0], 1);
+showChar(chars[1], 2);
+
 /** Création player 1 */
 let p1 = new Player();
 p1.id = 1
 p1.x = 0;
 p1.y = 0;
-p1.velocityX = blockWidth/3;
+p1.velocityX = 20*blockWidth;
 p1.velocityY = (targetJump / (jumpTimeMs / 20));
 p1.attacks.primary.attackDomElement = weaponPlayer1;
 p1.playerDomElement = player1;
@@ -100,8 +163,8 @@ p1.healthPercentageDom = healthPercentageP1;
 p1.keys = ['q', 'd', ' ', 'z', 'a'];
 p1.attacks.ultimate.attackDomElement = ultimateP1;
 p1.attacks.ultimate.iconDomElement = ultimateIconP1;
-p1.attacks.ultimate.trajectory.equationX = function move(x0, t) { return Math.cos(45)*90*t + x0 };
-p1.attacks.ultimate.trajectory.equationY = function move(y0, t) { return -0.5*9.81*(t**2) + Math.sin(45)*90*t + y0 };
+p1.attacks.ultimate.trajectory.equationX = chars[0].attacks.ultimate.trajectory.equationX;
+p1.attacks.ultimate.trajectory.equationY = chars[0].attacks.ultimate.trajectory.equationY;
 p1.attacks.primary.iconDomElement = primaryIconP1;
 
 
@@ -110,16 +173,16 @@ let p2 = new Player();
 p2.id = 2
 p2.x = game.offsetWidth - player2.offsetWidth;
 p2.y = 0;
-p2.velocityX = blockWidth/3;
-p2.velocityY = (targetJump / (jumpTimeMs / 20));
+p2.velocityX = 20*blockWidth;
+p2.velocityY = (targetJump / (jumpTimeMs / timerStepMs));
 p2.attacks.primary.attackDomElement = weaponPlayer2;
 p2.playerDomElement = player2;
 p2.healthPercentageDom = healthPercentageP2;
 p2.keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', '1', '2']
 p2.attacks.ultimate.attackDomElement = ultimateP2;
 p2.attacks.ultimate.iconDomElement = ultimateIconP2;
-p2.attacks.ultimate.trajectory.equationX = function move(x0, t) { return -Math.cos(45)*90*t + x0};
-p2.attacks.ultimate.trajectory.equationY = function move(y0, t) { return -0.5*9.81*(t**2) + Math.sin(45)*90*t + y0 };
+p2.attacks.ultimate.trajectory.equationX = chars[1].attacks.ultimate.trajectory.equationX;
+p2.attacks.ultimate.trajectory.equationY = chars[1].attacks.ultimate.trajectory.equationY;
 p2.attacks.primary.iconDomElement = primaryIconP2;
 
 const players = [p1,p2];
@@ -289,8 +352,10 @@ const gameIsPlayed = setInterval(() => {
 
 
         if (player.health <= 0) {
-            clearInterval(gameIsPlayed)
-            if(!alert('Player ' + (2 - index) + ' won!')) window.location.reload();
+            clearInterval(gameIsPlayed);
+            gameOver.style.display = 'block';
+
+            winner.innerText = `Player ${2 - index} won the game !`
         }
     });
 
@@ -388,15 +453,15 @@ function movePlayer(player, direction) {
 
     switch(direction) {
         case 'left':
-            if (player.x - player.velocityX >= 0) {
-                player.x -= player.velocityX;
+            if (player.x - (timerStepMs * player.velocityX/1000) >= 0) {
+                player.x -= timerStepMs * player.velocityX/1000;
                 player.playerDomElement.style.left = player.x + 'px';
             }
         break;
 
         case 'right':
-            if (player.x + player.velocityX + player.playerDomElement.offsetWidth < game.offsetWidth) {
-                player.x += player.velocityX;
+            if (player.x + (timerStepMs * player.velocityX/1000) + player.playerDomElement.offsetWidth < game.offsetWidth) {
+                player.x += timerStepMs * player.velocityX/1000;
                 player.playerDomElement.style.left = player.x + 'px';
             }
         break;
