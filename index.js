@@ -110,82 +110,21 @@ ultimateP2.style.height = 4*blockHeight + 'px';
 
 /** ------------------------- PLAYERS CHOICE AND CREATION -------------------------*/
 
-let chars = [CharUtils.chars[0],  CharUtils.chars[0]];
-let remainingCharToSelect = 2;
-
-function showChar(char, playerId) {
-    document.getElementById('p' + playerId + '-char-name').innerHTML = char.name;
-    document.getElementById('p' + playerId + '-char-png').src = char.pngSrc;
-    document.getElementById('p' + playerId + '-char-primary-png').src = char.primarySrc;
-    document.getElementById('p' + playerId + '-char-primary-desc').innerHTML = char.primaryDesc;
-    document.getElementById('p' + playerId + '-char-ultimate-png').src = char.ultimateSrc;
-    document.getElementById('p' + playerId + '-char-ultimate-desc').innerHTML = char.ultimateDesc;
-    
-    document.querySelector('#img-char-p' + playerId + ' img').src = char.pngSrc;
-    document.querySelector('#weapon-p' + playerId + ' img').src = char.primarySrc;
-    document.querySelector('#ultimate-p' + playerId + ' img').src = char.ultimateSrc;
-    document.querySelector('#primary-icon-p' + playerId + ' img').src = char.primarySrc;
-    document.querySelector('#ultimate-icon-p' + playerId + ' img').src = char.ultimateSrc;
-}
-
-function nextChar(playerId, previous = false) {
-    const currentChar = chars[playerId - 1];
-    const newChar = CharUtils.nextPlayer(CharUtils.chars.indexOf(currentChar), previous);
-    showChar(newChar, playerId);
-    chars[playerId - 1] = newChar;
-}
-
-function validateChar(playerId) {
-    document.getElementById('p' + playerId + '-prev').style.display = 'none';
-    document.getElementById('p' + playerId + '-next').style.display = 'none';
-    document.getElementById('p' + playerId + '-validate').innerHTML = 'Ready to fight !';
-
-    remainingCharToSelect -= 1;
-
-    if (remainingCharToSelect == 0) {
-        document.getElementById('home-screen').style.display = 'none';
-    }
-}
-
-showChar(chars[0], 1);
-showChar(chars[1], 2);
-
 /** Création player 1 */
 let p1 = new Player();
-p1.id = 1
-p1.x = 0;
-p1.y = 0;
-p1.velocityX = 20*blockWidth;
-p1.velocityY = (targetJump / (jumpTimeMs / 20));
-p1.attacks.primary.attackDomElement = weaponPlayer1;
-p1.playerDomElement = player1;
-p1.healthPercentageDom = healthPercentageP1;
-p1.keys = ['q', 'd', ' ', 'z', 'a'];
-p1.attacks.ultimate.attackDomElement = ultimateP1;
-p1.attacks.ultimate.iconDomElement = ultimateIconP1;
-p1.attacks.ultimate.trajectory.equationX = chars[0].ultimateEqua[0].ultEquaX;
-p1.attacks.ultimate.trajectory.equationY = chars[0].ultimateEqua[0].ultEquaY;
-p1.attacks.primary.iconDomElement = primaryIconP1;
-
 
 /** Création player 2 */
 let p2 = new Player();
-p2.id = 2
-p2.x = game.offsetWidth - player2.offsetWidth;
-p2.y = 0;
-p2.velocityX = 20*blockWidth;
-p2.velocityY = (targetJump / (jumpTimeMs / timerStepMs));
-p2.attacks.primary.attackDomElement = weaponPlayer2;
-p2.playerDomElement = player2;
-p2.healthPercentageDom = healthPercentageP2;
-p2.keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', '1', '2']
-p2.attacks.ultimate.attackDomElement = ultimateP2;
-p2.attacks.ultimate.iconDomElement = ultimateIconP2;
-p2.attacks.ultimate.trajectory.equationX = chars[1].ultimateEqua[1].ultEquaX;
-p2.attacks.ultimate.trajectory.equationY = chars[1].ultimateEqua[1].ultEquaY;
-p2.attacks.primary.iconDomElement = primaryIconP2;
+
+let chars = [CharUtils.chars[0],  CharUtils.chars[0]];
+let remainingCharToSelect = 2;
+
+CharUtils.showChar(chars[0], 1);
+CharUtils.showChar(chars[1], 2);
 
 const players = [p1,p2];
+
+let gameIsOn = false;
 
 
 /** ------------------------- GAME ENGINE  -------------------------*/
@@ -233,131 +172,135 @@ window.addEventListener('keyup', (e) => {
 
 const gameIsPlayed = setInterval(() => {
 
-    /** Pour chaque player on effectue des actions en fonction des touches jouées */
-    act();
+    if (gameIsOn) {
+        /** Pour chaque player on effectue des actions en fonction des touches jouées */
+        act();
 
-    /** Pour chaque player, on gère ensuite les effets qui durent dans le temps */
-    players.forEach((player, index) => {
-
-        /** ------------------------- ULTIMATE -------------------------*/
-
-        player.attacks.ultimate.timer += 1;
-
-        /** 
-         * Si l'utlitmate est chargé et qu'il n'est pas déjà prêt, on le passe ready et on anime l'icone de l'attaque.
-         * Sinon, on incrémente le timer de l'attaque et modifie l'opacité de l'icone de l'attaque (de plus en plus clair).
-         */
-        if (player.attacks.ultimate.timer % 100 == 0 && !player.attacks.ultimate.ready) {
-            player.attacks.ultimate.ready = true;
-            player.attacks.ultimate.iconDomElement.style.border = 'inset 2px orange';
-            console.log(`player ${player.id} ability ready`);
-        } else {
-            player.attacks.ultimate.iconDomElement.style.opacity = player.attacks.ultimate.timer / 100
-        }
-
-        /** Si l'attaque est lancée, on calcule sa trajectoire et applique les damages, effets ... */
-        if (player.attacks.ultimate.launched) {
-
-            /** On affiche l'attaque dans le DOM */
-            player.attacks.ultimate.attackDomElement.style.display = 'block';
-            player.attacks.ultimate.iconDomElement.style.border = 'none';
-
-
-            /** Calcul des nouvelles coordonnées de l'attaque et mise à jour du DOM */
-            player.attacks.ultimate.trajectory.timer += 1; 
-
-            player.attacks.ultimate.postionX = player.attacks.ultimate.trajectory.equationX(player.attacks.ultimate.x0, player.attacks.ultimate.trajectory.timer);
-            player.attacks.ultimate.postionY = player.attacks.ultimate.trajectory.equationY(player.attacks.ultimate.y0, player.attacks.ultimate.trajectory.timer);
-            
-            player.attacks.ultimate.attackDomElement.style.left = player.attacks.ultimate.postionX  + 'px';
-            player.attacks.ultimate.attackDomElement.style.bottom = player.attacks.ultimate.postionY + 'px';
-
-            /** Application des damages */
-            const ennemy = players[2 - player.id];
-
-            const ultimateCenterX = player.attacks.ultimate.postionX + (player.attacks.ultimate.attackDomElement.offsetWidth)/2;
-            const ultimateCenterY = player.attacks.ultimate.postionY + (player.attacks.ultimate.attackDomElement.offsetHeight)/2;
-
-            if (objectsCollide(ultimateCenterX, ultimateCenterY, ennemy.x, ennemy.y, ennemy.playerDomElement.offsetWidth, ennemy.playerDomElement.offsetHeight)) {
-                console.log(`Player ${player.id} hit player ${ennemy.id}`)
-
-                updatePlayerHealth(ennemy, player.attacks.ultimate.damages)
-
-                players[2 - player.id] = ennemy;
-
-                player.attacks.ultimate.launched = false;
-                player.attacks.ultimate.attackDomElement.style.display = 'none';
-                player.attacks.ultimate.trajectory.timer = 0;
-            }
-
-
-            /** Si l'attaque n'est plus dans le cadre du jeu, on considére l'attaque comme terminée. */
-            if (player.attacks.ultimate.postionX < - 100 || player.attacks.ultimate.postionX > game.offsetWidth + 100 || player.attacks.ultimate.postionY < -100) {
-                player.attacks.ultimate.launched = false;
-                player.attacks.ultimate.attackDomElement.style.display = 'none';
-                player.attacks.ultimate.trajectory.timer = 0;
-            }
-
-        } else {
-
-            /** MAJ de la position de départ de l'attaque en fonction du joueur */
-            player.attacks.ultimate.x0 = player.x;
-            player.attacks.ultimate.y0 = player.y;       
-
-        }
-
-
-        /** ------------------------- PLAYER JUMP -------------------------*/
-
-
-        if (player.jumped && !player.isGoingDown) {
-            player.jumpTimer += 1;
-
+        /** Pour chaque player, on gère ensuite les effets qui durent dans le temps */
+        players.forEach((player, index) => {
+    
+            /** ------------------------- ULTIMATE -------------------------*/
+    
+            player.attacks.ultimate.timer += 1;
+    
             /** 
-             * Si le joueur n'a pas atteint la hauteur de saut max, il continue d'aller vers le haut.
-             * Sinon, il commence à retomber.
+             * Si l'utlitmate est chargé et qu'il n'est pas déjà prêt, on le passe ready et on anime l'icone de l'attaque.
+             * Sinon, on incrémente le timer de l'attaque et modifie l'opacité de l'icone de l'attaque (de plus en plus clair).
              */
-            if (player.y < player.levelIndex*targetJump) {
-                player.y += player.velocityY;
+            if (player.attacks.ultimate.timer % 100 == 0 && !player.attacks.ultimate.ready) {
+                player.attacks.ultimate.ready = true;
+                player.attacks.ultimate.iconDomElement.style.border = 'inset 2px orange';
+                console.log(`player ${player.id} ability ready`);
             } else {
-                player.isGoingDown = true;
+                player.attacks.ultimate.iconDomElement.style.opacity = player.attacks.ultimate.timer / 100
             }
-
-            player.playerDomElement.style.bottom = player.y + 'px';
-
-        } else {
-
-            /** Calcul du niveau de plateforme sur lequel le joueur se trouve */
-            player.levelIndex = Math.ceil(((player.y) / (5*blockHeight))) + 1;
-            
-            if (player.y > 0) {
-                /** Si le joueur arrive sur une plateforme, il s'arrête */
-                if (playerOnPlatform(player)) {
-                    player.isGoingDown = false;
-                    player.jumped = false;
+    
+            /** Si l'attaque est lancée, on calcule sa trajectoire et applique les damages, effets ... */
+            if (player.attacks.ultimate.launched) {
+    
+                /** On affiche l'attaque dans le DOM */
+                player.attacks.ultimate.attackDomElement.style.display = 'block';
+                player.attacks.ultimate.iconDomElement.style.border = 'none';
+    
+    
+                /** Calcul des nouvelles coordonnées de l'attaque et mise à jour du DOM */
+                player.attacks.ultimate.trajectory.timer += 1; 
+    
+                player.attacks.ultimate.postionX = player.attacks.ultimate.trajectory.equationX(player.attacks.ultimate.x0, player.attacks.ultimate.trajectory.timer);
+                player.attacks.ultimate.postionY = player.attacks.ultimate.trajectory.equationY(player.attacks.ultimate.y0, player.attacks.ultimate.trajectory.timer);
+                
+                player.attacks.ultimate.attackDomElement.style.left = player.attacks.ultimate.postionX  + 'px';
+                player.attacks.ultimate.attackDomElement.style.bottom = player.attacks.ultimate.postionY + 'px';
+    
+                /** Application des damages */
+                const ennemy = players[2 - player.id];
+    
+                const ultimateCenterX = player.attacks.ultimate.postionX + (player.attacks.ultimate.attackDomElement.offsetWidth)/2;
+                const ultimateCenterY = player.attacks.ultimate.postionY + (player.attacks.ultimate.attackDomElement.offsetHeight)/2;
+    
+                if (objectsCollide(ultimateCenterX, ultimateCenterY, ennemy.x, ennemy.y, ennemy.playerDomElement.offsetWidth, ennemy.playerDomElement.offsetHeight)) {
+                    console.log(`Player ${player.id} hit player ${ennemy.id}`)
+    
+                    updatePlayerHealth(ennemy, player.attacks.ultimate.damages)
+    
+                    players[2 - player.id] = ennemy;
+    
+                    player.attacks.ultimate.launched = false;
+                    player.attacks.ultimate.attackDomElement.style.display = 'none';
+                    player.attacks.ultimate.trajectory.timer = 0;
+                }
+    
+    
+                /** Si l'attaque n'est plus dans le cadre du jeu, on considére l'attaque comme terminée. */
+                if (player.attacks.ultimate.postionX < - 100 || player.attacks.ultimate.postionX > game.offsetWidth + 100 || player.attacks.ultimate.postionY < -100) {
+                    player.attacks.ultimate.launched = false;
+                    player.attacks.ultimate.attackDomElement.style.display = 'none';
+                    player.attacks.ultimate.trajectory.timer = 0;
+                }
+    
+            } else {
+    
+                /** MAJ de la position de départ de l'attaque en fonction du joueur */
+                player.attacks.ultimate.x0 = player.x;
+                player.attacks.ultimate.y0 = player.y;       
+    
+            }
+    
+    
+            /** ------------------------- PLAYER JUMP -------------------------*/
+    
+    
+            if (player.jumped && !player.isGoingDown) {
+                player.jumpTimer += 1;
+    
+                /** 
+                 * Si le joueur n'a pas atteint la hauteur de saut max, il continue d'aller vers le haut.
+                 * Sinon, il commence à retomber.
+                 */
+                if (player.y < player.levelIndex*targetJump) {
+                    player.y += player.velocityY;
                 } else {
-                    player.y -= player.velocityY;
                     player.isGoingDown = true;
                 }
+    
+                player.playerDomElement.style.bottom = player.y + 'px';
+    
             } else {
-                player.isGoingDown = false;
-                player.jumped = false;
+    
+                /** Calcul du niveau de plateforme sur lequel le joueur se trouve */
+                player.levelIndex = Math.ceil(((player.y) / (5*blockHeight))) + 1;
+                
+                if (player.y > 0) {
+                    /** Si le joueur arrive sur une plateforme, il s'arrête */
+                    if (playerOnPlatform(player)) {
+                        player.isGoingDown = false;
+                        player.jumped = false;
+                    } else {
+                        player.y -= player.velocityY;
+                        player.isGoingDown = true;
+                    }
+                } else {
+                    player.isGoingDown = false;
+                    player.jumped = false;
+                }
+    
+                player.playerDomElement.style.bottom = player.y + 'px';
             }
+    
+    
+            /** ------------------------- END OF GAME -------------------------*/
+    
+    
+            if (player.health <= 0) {
+                clearInterval(gameIsPlayed);
+                gameOver.style.display = 'block';
+    
+                winner.innerText = `Player ${2 - index} won the game !`;
+            }
+    
+        });
+    }
 
-            player.playerDomElement.style.bottom = player.y + 'px';
-        }
-
-
-        /** ------------------------- END OF GAME -------------------------*/
-
-
-        if (player.health <= 0) {
-            clearInterval(gameIsPlayed);
-            gameOver.style.display = 'block';
-
-            winner.innerText = `Player ${2 - index} won the game !`
-        }
-    });
 
 }, timerStepMs);
 
@@ -408,6 +351,8 @@ function act() {
         })
     });
 }
+
+/** ------------------------- FUNCTIONS -------------------------*/
 
 
 /**
@@ -520,4 +465,56 @@ function updatePlayerHealth(player, damages) {
     player.health -= damages;
     player.healthPercentageDom.style.width = ((1 - (player.health/baseHealth))* 100) + '%';
     player.healthPercentageDom.style.display = 'block';
+}
+
+function nextChar(playerId, previous = false) {
+    const currentChar = chars[playerId - 1];
+    const newChar = CharUtils.nextPlayer(CharUtils.chars.indexOf(currentChar), previous);
+    CharUtils.showChar(newChar, playerId);
+    chars[playerId - 1] = newChar;
+}
+
+function validateChar(playerId) {
+    document.getElementById('p' + playerId + '-prev').style.display = 'none';
+    document.getElementById('p' + playerId + '-next').style.display = 'none';
+    document.getElementById('p' + playerId + '-validate').innerHTML = 'Ready to fight !';
+
+    remainingCharToSelect -= 1;
+
+    if (remainingCharToSelect == 0) {
+
+        p1.id = 1
+        p1.x = 0;
+        p1.y = 0;
+        p1.velocityX = 20*blockWidth;
+        p1.velocityY = (targetJump / (jumpTimeMs / 20));
+        p1.attacks.primary.attackDomElement = weaponPlayer1;
+        p1.playerDomElement = player1;
+        p1.healthPercentageDom = healthPercentageP1;
+        p1.keys = ['q', 'd', ' ', 'z', 'a'];
+        p1.attacks.ultimate.attackDomElement = ultimateP1;
+        p1.attacks.ultimate.iconDomElement = ultimateIconP1;
+        p1.attacks.ultimate.trajectory.equationX = chars[0].ultimateEqua[0].ultEquaX;
+        p1.attacks.ultimate.trajectory.equationY = chars[0].ultimateEqua[0].ultEquaY;
+        p1.attacks.primary.iconDomElement = primaryIconP1;
+
+        p2.id = 2
+        p2.x = game.offsetWidth - player2.offsetWidth;
+        p2.y = 0;
+        p2.velocityX = 20*blockWidth;
+        p2.velocityY = (targetJump / (jumpTimeMs / timerStepMs));
+        p2.attacks.primary.attackDomElement = weaponPlayer2;
+        p2.playerDomElement = player2;
+        p2.healthPercentageDom = healthPercentageP2;
+        p2.keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', '1', '2']
+        p2.attacks.ultimate.attackDomElement = ultimateP2;
+        p2.attacks.ultimate.iconDomElement = ultimateIconP2;
+        p2.attacks.ultimate.trajectory.equationX = chars[1].ultimateEqua[1].ultEquaX;
+        p2.attacks.ultimate.trajectory.equationY = chars[1].ultimateEqua[1].ultEquaY;
+        p2.attacks.primary.iconDomElement = primaryIconP2;
+
+        document.getElementById('home-screen').style.display = 'none';
+
+        gameIsOn = true;
+    }
 }

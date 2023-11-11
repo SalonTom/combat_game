@@ -25,12 +25,27 @@ class CharUtils {
     static nextPlayer(currentCharIndex, prev = false) {
         let char = this.chars[currentCharIndex]
         
-        if (prev && currentCharIndex >= 1) {
+        if (prev && this.chars.indexOf(char) > 0) {
             char =  this.chars[currentCharIndex - 1];
-        } else if (!prev && currentCharIndex < this.chars.length) {
+        } else if (!prev && this.chars.indexOf(char) < this.chars.length - 1) {
             char = this.chars[currentCharIndex + 1];
         }
 
         return char;
+    }
+
+    static showChar(char, playerId) {
+        document.getElementById('p' + playerId + '-char-name').innerHTML = char.name;
+        document.getElementById('p' + playerId + '-char-png').src = char.pngSrc;
+        document.getElementById('p' + playerId + '-char-primary-png').src = char.primarySrc;
+        document.getElementById('p' + playerId + '-char-primary-desc').innerHTML = char.primaryDesc;
+        document.getElementById('p' + playerId + '-char-ultimate-png').src = char.ultimateSrc;
+        document.getElementById('p' + playerId + '-char-ultimate-desc').innerHTML = char.ultimateDesc;
+        
+        document.querySelector('#img-char-p' + playerId + ' img').src = char.pngSrc;
+        document.querySelector('#weapon-p' + playerId + ' img').src = char.primarySrc;
+        document.querySelector('#ultimate-p' + playerId + ' img').src = char.ultimateSrc;
+        document.querySelector('#primary-icon-p' + playerId + ' img').src = char.primarySrc;
+        document.querySelector('#ultimate-icon-p' + playerId + ' img').src = char.ultimateSrc;
     }
 }
