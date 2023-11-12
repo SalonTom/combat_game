@@ -232,7 +232,7 @@ const gameIsPlayed = setInterval(() => {
     
     
                 /** Si l'attaque n'est plus dans le cadre du jeu, on considére l'attaque comme terminée. */
-                if (player.attacks.ultimate.postionX < - 100 || player.attacks.ultimate.postionX > game.offsetWidth + 100 || player.attacks.ultimate.postionY < -100) {
+                if (player.attacks.ultimate.postionX < -1000 || player.attacks.ultimate.postionX > game.offsetWidth + 1000 || player.attacks.ultimate.postionY < -1000) {
                     player.attacks.ultimate.launched = false;
                     player.attacks.ultimate.attackDomElement.style.display = 'none';
                     player.attacks.ultimate.trajectory.timer = 0;
