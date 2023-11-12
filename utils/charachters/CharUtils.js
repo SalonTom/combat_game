@@ -19,6 +19,26 @@ class CharUtils {
                     ultEquaY: function move(y0, t) { return -0.5*9.81*(t**2) + Math.sin(45)*90*t + y0 }
                 }
             ]
+        ),
+        new Character(
+            2,
+            'Godrilla',
+            'assets/character/gorilla/gorilla.png',
+            'assets/character/gorilla/weapons/machette.png',
+            'Close range combat. Deals <b>5</b> damages.',
+            'assets/character/gorilla/weapons/banana.png',
+            'Throw a crazy banana at your opponent. Deals <b>15</b> damages.',
+            
+            [
+                {
+                    ultEquaX: function move(x0, t) { return x0 + 40*t },
+                    ultEquaY: function move(y0, t) { return 200*Math.sin((1/8) * Math.PI * t) + y0 }
+                }, 
+                {
+                    ultEquaX: function move(x0, t) { return x0 - 40*t},
+                    ultEquaY: function move(y0, t) { return 200*Math.sin((1/8) * Math.PI * t) + y0 }
+                }
+            ]
         )
     ];
 
