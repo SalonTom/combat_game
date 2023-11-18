@@ -2,11 +2,16 @@
 
 # Creation of a combat game - html, css, js
 
-![Game](game.png)
+> The game is available online at the following url : https://combat-game.vercel.app/
+
+![Game Home Screen](image.png)
+![Game](image-1.png)
 
 This game is an offline combat game where two players can fight each other using the same computer. The goal is to deal 100 damages or more to the ennemy. Eventually, several characters with their own skin and attacks will be available.
 
-## How to move ?
+## Controls
+
+### Movement and attacks
 
 |    **Moves**    | **PLayer 1 <br/>(Start on the Left)** | **Player 2 <br/>(Start on the Right)** |
 |:---------------:|---------------------|----------------------|
@@ -15,9 +20,15 @@ This game is an offline combat game where two players can fight each other using
 |       Jump      |          <kbd>z</kbd>           |          <kbd>ArrowUp</kbd>            |
 |  Primary Attack |          <kbd>space</kbd>           |          <kbd>KeyPad1</kbd>            |
 | Ultimate Attack |          <kbd>a</kbd>           |          <kbd>KeyPad2</kbd>            |
+| Ultimate Attack |          <kbd>a</kbd>           |          <kbd>KeyPad2</kbd>            |
 
-## How to deal damages ?
+### Game controls
 
-At the moment, the only attack available is the primary. It deals 5 damages and is close-range.
+|    **Feature**    | **Key** |
+|:---------------:|----------------------|
+|       Start / Stop music      |          <kbd>m</kbd>           |
 
-More characters and attacks are to come in the future stages of the development.
+## Characters
+
+![Cow mère](image-2.png)
+![Alt text](image-3.png)
